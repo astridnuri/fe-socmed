@@ -19,6 +19,7 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+  const [commentFormOpen, setCommentFormOpen] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,7 +56,9 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
   };
 
   const handleDeleted = (commentId: number, count?: number) => {
-    const next = comments.filter((c) => c.id !== commentId);
+    const next = comments.filter(
+      (c) => c.id !== commentId && c.parent_comment_id !== commentId
+    );
     setComments(next);
     onCountChange(count ?? next.length); // pakai angka dari server bila ada
   };
@@ -92,18 +95,38 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
             </p>
           ) : (
             <div className="space-y-4">
-              {comments.map((c) => (
-                <CommentItem
-                  key={c.id}
-                  comment={c}
-                  postId={postId}
-                  onDeleted={handleDeleted}
-                  onUpdated={handleUpdated}
-                />
-              ))}
+              {comments
+                .filter((comment) => comment.parent_comment_id === null)
+                .map((c) => (
+                  <CommentItem
+                    key={c.id}
+                    comment={c}
+                    replies={comments.filter(
+                      (reply) => reply.parent_comment_id === c.id
+                    )}
+                    postId={postId}
+                    onCreated={handleCreated}
+                    onDeleted={handleDeleted}
+                    onUpdated={handleUpdated}
+                  />
+                ))}
             </div>
           )}
-          <CommentForm postId={postId} onCreated={handleCreated} />
+          {commentFormOpen ? (
+            <CommentForm
+              postId={postId}
+              onCreated={handleCreated}
+              onCancel={() => setCommentFormOpen(false)}
+            />
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCommentFormOpen(true)}
+            >
+              Write a comment
+            </Button>
+          )}
         </>
       )}
     </div>

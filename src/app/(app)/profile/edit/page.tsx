@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ProfileForm } from "@/components/profile/profile-form";
 
-export const metadata: Metadata = { title: "Edit Profil" };
+export const metadata: Metadata = { title: "Edit Profile" };
 
 export default function EditProfilePage() {
   return (

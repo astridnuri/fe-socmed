@@ -115,7 +115,7 @@ export function CommentEditForm({
           onClick={onClose}
           disabled={submitting}
         >
-          Batal
+          Cancel
         </Button>
         <Button
           type="submit"

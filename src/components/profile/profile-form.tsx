@@ -280,7 +280,7 @@ export function ProfileForm() {
 
       <div className="flex justify-end gap-3">
         <Button type="button" variant="ghost" onClick={() => router.push("/")}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" className={primaryTone} disabled={submitting}>
           {submitting ? "Saving..." : "Save changes"}

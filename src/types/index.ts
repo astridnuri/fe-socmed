@@ -6,6 +6,8 @@ export interface User {
   bio: string | null;
 }
 
+export type PublicProfile = Pick<User, "id" | "name" | "avatar" | "bio">;
+
 export interface PostUser {
   id: number;
   name: string;
@@ -16,6 +18,7 @@ export interface Post {
   id: number;
   content: string | null;
   image: string | null;
+  location: string | null;
   created_at: string;
   updated_at: string | null;
   user: PostUser;
@@ -28,8 +31,11 @@ export interface Post {
 export interface PostComment {
   id: number;
   post_id: number;
+  parent_comment_id: number | null;
   comment: string | null;
   image: string | null;
+  likes_count: number;
+  liked_by_me: boolean;
   created_at: string;
   updated_at: string | null;
   user: PostUser;

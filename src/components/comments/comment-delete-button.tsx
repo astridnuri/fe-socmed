@@ -19,12 +19,14 @@ import * as commentService from "@/services/comments";
 interface CommentDeleteButtonProps {
   postId: number;
   commentId: number;
+  hasReplies?: boolean;
   onDeleted: (commentId: number, commentsCount?: number) => void;
 }
 
 export function CommentDeleteButton({
   postId,
   commentId,
+  hasReplies = false,
   onDeleted,
 }: CommentDeleteButtonProps) {
   const [open, setOpen] = useState(false);
@@ -71,7 +73,9 @@ export function CommentDeleteButton({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
             <AlertDialogDescription>
-              Comment will be permanently deleted and cannot be retrieved.
+              {hasReplies
+                ? "This comment and its replies will be permanently deleted."
+                : "Comment will be permanently deleted and cannot be retrieved."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

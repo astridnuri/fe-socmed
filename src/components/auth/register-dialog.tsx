@@ -56,7 +56,7 @@ export function RegisterDialog() {
     try {
       const res = await authService.register(parsed.data);
       signIn(res); // backend sudah mengirim token -> langsung login (auto-login)
-      toast.success("Akun berhasil dibuat");
+      toast.success("Account created");
       setOpen(false);
       router.replace("/");
     } catch (err) {
@@ -64,7 +64,7 @@ export function RegisterDialog() {
         setErrors(err.errors); // 409 -> { email: "Email already taken" }
       } else {
         setErrors({
-          form: err instanceof ApiError ? err.message : "Terjadi kesalahan, coba lagi",
+          form: err instanceof ApiError ? err.message : "Error occured, please try again",
         });
       }
       setSubmitting(false);
@@ -77,12 +77,12 @@ export function RegisterDialog() {
     type: string;
     autoComplete: string;
   }[] = [
-    { key: "name", label: "Nama lengkap", type: "text", autoComplete: "name" },
+    { key: "name", label: "Full name", type: "text", autoComplete: "name" },
     { key: "email", label: "Email", type: "email", autoComplete: "email" },
     { key: "password", label: "Password", type: "password", autoComplete: "new-password" },
     {
       key: "confirmPassword",
-      label: "Konfirmasi password",
+      label: "Confirm password",
       type: "password",
       autoComplete: "new-password",
     },

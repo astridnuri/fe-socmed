@@ -18,10 +18,19 @@ const MAX_LENGTH = 300;
 
 interface CommentFormProps {
   postId: number;
+  parentCommentId?: number;
+  replyToName?: string;
+  onCancel?: () => void;
   onCreated: (comment: PostComment, commentsCount: number) => void;
 }
 
-export function CommentForm({ postId, onCreated }: CommentFormProps) {
+export function CommentForm({
+  postId,
+  parentCommentId,
+  replyToName,
+  onCancel,
+  onCreated,
+}: CommentFormProps) {
   const { user } = useAuth();
 
   const [text, setText] = useState("");
@@ -72,6 +81,9 @@ export function CommentForm({ postId, onCreated }: CommentFormProps) {
     try {
       const formData = new FormData();
       if (parsed.data.comment) formData.append("comment", parsed.data.comment);
+      if (parentCommentId !== undefined) {
+        formData.append("parent_comment_id", String(parentCommentId));
+      }
       if (file) formData.append("image", file);
 
       const res = await commentService.createComment(postId, formData);
@@ -88,6 +100,13 @@ export function CommentForm({ postId, onCreated }: CommentFormProps) {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const onCancelForm = () => {
+    setText("");
+    setError("");
+    setPicked(null);
+    onCancel?.();
   };
 
   // Ctrl+Enter / Cmd+Enter untuk mengirim
@@ -109,12 +128,15 @@ export function CommentForm({ postId, onCreated }: CommentFormProps) {
       />
 
       <div className="min-w-0 flex-1 space-y-2">
+        {replyToName && (
+          <p className="text-xs text-slate-500">Replying to {replyToName}</p>
+        )}
         <Textarea
           rows={2}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Write your comment..."
+          placeholder={parentCommentId ? "Write a reply..." : "Write your comment..."}
           className={cn(textareaClass, "min-h-16 text-sm")}
           aria-invalid={text.length > MAX_LENGTH}
         />
@@ -170,11 +192,23 @@ export function CommentForm({ postId, onCreated }: CommentFormProps) {
             >
               {text.length}/{MAX_LENGTH}
             </span>
+            {onCancel && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="text-slate-600"
+                onClick={onCancelForm}
+                disabled={submitting}
+              >
+                Cancel
+              </Button>
+            )}
             <Button
               type="submit"
               size="sm"
               className={primaryTone}
-              disabled={submitting || empty}
+              disabled={submitting || empty || text.length > MAX_LENGTH}
             >
               {submitting ? "Sending..." : "Send"}
             </Button>

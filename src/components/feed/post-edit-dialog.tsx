@@ -43,7 +43,7 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
       return;
     }
     if (!parsed.data.content && !post.image) {
-      setError("Teks tidak boleh kosong karena postingan ini tidak memiliki gambar");
+      setError("Post without image cannot be empty");
       return;
     }
     if (parsed.data.content === (post.content ?? "")) {
@@ -56,13 +56,13 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
     try {
       const res = await postService.updatePost(post.id, parsed.data.content);
       onUpdated(res.post);
-      toast.success("Postingan berhasil diperbarui");
+      toast.success("Post updated");
       onClose();
     } catch (err) {
       setError(
         err instanceof ApiError
           ? (err.errors?.content ?? err.message)
-          : "Terjadi kesalahan, coba lagi"
+          : "Error occured, please try again"
       );
       setSubmitting(false);
     }
@@ -118,7 +118,7 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
               {content.length}/{MAX_LENGTH}
             </span>
             <Button type="button" variant="ghost" onClick={onClose} disabled={submitting}>
-              Batal
+              Cancel
             </Button>
             <Button
               type="submit"

@@ -57,7 +57,6 @@ export function LoginForm({ reason }: { reason?: string }) {
       setSubmitting(false);
     }
   };
-
   return (
   <div className="space-y-6">
     <form onSubmit={onSubmit} className="space-y-5" noValidate>

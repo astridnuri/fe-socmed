@@ -9,7 +9,7 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(1, "Password is required")
-    .min(8, "Password min. 8 characters"),
+    .min(6, "Password min. 6 characters"),
 });
 
 export const registerSchema = z
@@ -26,7 +26,7 @@ export const registerSchema = z
       .email("Invalid email format"),
     password: z
       .string()
-      .min(8, "Password min. 8 characters")
+      .min(6, "Password min. 6 characters")
       .max(72, "Password max. 72 characters"),
     confirmPassword: z.string().min(1, "Password confirmation is required"),
   })
@@ -37,6 +37,7 @@ export const registerSchema = z
 
   export const postSchema = z.object({
   content: z.string().trim().max(500, "Text max. 500 characters"),
+  location: z.string().trim().max(255, "Location max. 255 characters").optional(),
 });
 
 export const profileSchema = z
@@ -62,7 +63,7 @@ export const profileSchema = z
     if (!d.oldPassword) fail("oldPassword", required);
 
     if (!d.newPassword) fail("newPassword", required);
-    else if (d.newPassword.length < 8) fail("newPassword", "New password min. 8 characters");
+    else if (d.newPassword.length < 6) fail("newPassword", "New password min. 6 characters");
     else if (d.newPassword.length > 72) fail("newPassword", "New password max. 72 characters");
     else if (d.newPassword === d.oldPassword)
       fail("newPassword", "New and old password cannot be the same");

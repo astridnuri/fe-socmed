@@ -25,7 +25,7 @@ function PostSkeleton() {
   );
 }
 
-export function FeedList() {
+export function FeedList({ userId }: { userId?: number }) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextCursor, setNextCursor] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ export function FeedList() {
     let cancelled = false;
 
     postService
-      .getPosts()
+      .getPosts(null, 10, userId)
       .then((res) => {
         if (cancelled) return;
         setPosts(res.posts);
@@ -55,7 +55,7 @@ export function FeedList() {
     return () => {
       cancelled = true;
     };
-  }, [reloadKey]);
+  }, [reloadKey, userId]);
 
   const retry = () => {
     setLoading(true);
@@ -67,7 +67,7 @@ export function FeedList() {
     if (!nextCursor || loadingMore) return;
     setLoadingMore(true);
     try {
-      const res = await postService.getPosts(nextCursor);
+      const res = await postService.getPosts(nextCursor, 10, userId);
       setPosts((prev) => [...prev, ...res.posts]);
       setNextCursor(res.nextCursor);
     } catch (err) {
@@ -117,12 +117,12 @@ export function FeedList() {
 
   return (
     <div className="space-y-4">
-      <PostComposer onCreated={handleCreated} />
+      {!userId && <PostComposer onCreated={handleCreated} />}
 
       {posts.length === 0 ? (
         <div className={`${panel} p-10 text-center`}>
           <p className="text-sm text-slate-500">
-            No posts yet. Be the first to share.
+            {userId ? "This user hasn't posted yet." : "No posts yet. Be the first to share."}
           </p>
         </div>
       ) : (

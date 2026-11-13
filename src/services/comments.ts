@@ -21,3 +21,9 @@ export const deleteComment = (postId: number, commentId: number) =>
     `/posts/${postId}/comments/${commentId}`,
     { method: "DELETE" }
   );
+
+export const toggleCommentLike = (postId: number, commentId: number) =>
+  api<{ liked: boolean; likes_count: number }>(
+    `/posts/${postId}/comments/${commentId}/like`,
+    { method: "POST" }
+  );

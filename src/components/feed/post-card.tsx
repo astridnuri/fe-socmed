@@ -1,7 +1,8 @@
 "use client";
 
-import { MessageCircle } from "lucide-react";
+import { MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import { CommentSection } from "@/components/comments/comment-section";
 import { LikeButton } from "@/components/feed/like-button";
 import { PostMenu } from "@/components/feed/post-menu";
@@ -38,9 +39,12 @@ export function PostCard({ post, onDeleted, onUpdated }: PostCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 items-baseline gap-2">
-            <span className="truncate text-sm font-semibold text-slate-900">
+            <Link
+              href={`/users/${post.user.id}`}
+              className="truncate text-sm font-semibold text-slate-900 hover:underline"
+            >
               {post.user.name}
-            </span>
+            </Link>
             <time
               dateTime={post.created_at}
               className="shrink-0 text-xs text-slate-500"
@@ -56,6 +60,13 @@ export function PostCard({ post, onDeleted, onUpdated }: PostCardProps) {
           )}
         </div>
 
+        {post.location && (
+          <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+            <span className="break-words">{post.location}</span>
+          </p>
+        )}
+
         {post.content && (
           <p className="mt-1 whitespace-pre-wrap wrap-break-word text-[15px] leading-relaxed text-slate-800">
             {post.content}
@@ -66,7 +77,7 @@ export function PostCard({ post, onDeleted, onUpdated }: PostCardProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={fileUrl(post.image)}
-            alt="Lampiran postingan"
+            alt="Post image"
             loading="lazy"
             className="mt-3 max-h-112 w-auto max-w-full rounded-lg border border-slate-200"
           />

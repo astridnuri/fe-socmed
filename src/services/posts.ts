@@ -2,9 +2,14 @@ import { api } from "@/lib/api";
 import type { Post, PostsResponse } from "@/types";
 
 
-export const getPosts = (cursor?: number | null, limit = 10) => {
+export const getPosts = (
+  cursor?: number | null,
+  limit = 10,
+  userId?: number
+) => {
   const params = new URLSearchParams({ limit: String(limit) });
   if (cursor) params.set("cursor", String(cursor));
+  if (userId !== undefined) params.set("userId", String(userId));
   return api<PostsResponse>(`/posts?${params.toString()}`);
 };
 
