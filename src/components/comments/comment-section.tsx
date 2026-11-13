@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { CommentForm } from "@/components/comments/comment-form";
 import { CommentItem } from "@/components/comments/comment-item";
 import { Button } from "@/components/ui/button";
@@ -56,15 +56,57 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
   };
 
   const handleDeleted = (commentId: number, count?: number) => {
-    const next = comments.filter(
-      (c) => c.id !== commentId && c.parent_comment_id !== commentId
-    );
+    const deletedIds = new Set([commentId]);
+    let foundDescendant = true;
+
+    while (foundDescendant) {
+      foundDescendant = false;
+      for (const comment of comments) {
+        if (
+          comment.parent_comment_id !== null &&
+          deletedIds.has(comment.parent_comment_id) &&
+          !deletedIds.has(comment.id)
+        ) {
+          deletedIds.add(comment.id);
+          foundDescendant = true;
+        }
+      }
+    }
+
+    const next = comments.filter((comment) => !deletedIds.has(comment.id));
     setComments(next);
     onCountChange(count ?? next.length); // pakai angka dari server bila ada
   };
 
   const handleUpdated = (updated: PostComment) =>
     setComments((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+
+  const repliesByParent = new Map<number, PostComment[]>();
+  for (const comment of comments) {
+    if (comment.parent_comment_id === null) continue;
+
+    const replies = repliesByParent.get(comment.parent_comment_id) ?? [];
+    replies.push(comment);
+    repliesByParent.set(comment.parent_comment_id, replies);
+  }
+
+  const renderComment = (comment: PostComment): ReactNode => {
+    const replies = repliesByParent.get(comment.id) ?? [];
+
+    return (
+      <CommentItem
+        key={comment.id}
+        comment={comment}
+        replies={replies}
+        postId={postId}
+        onCreated={handleCreated}
+        onDeleted={handleDeleted}
+        onUpdated={handleUpdated}
+      >
+        {replies.map(renderComment)}
+      </CommentItem>
+    );
+  };
 
   return (
     <div className="mt-4 space-y-4 border-t border-slate-100 pt-4">
@@ -97,19 +139,7 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
             <div className="space-y-4">
               {comments
                 .filter((comment) => comment.parent_comment_id === null)
-                .map((c) => (
-                  <CommentItem
-                    key={c.id}
-                    comment={c}
-                    replies={comments.filter(
-                      (reply) => reply.parent_comment_id === c.id
-                    )}
-                    postId={postId}
-                    onCreated={handleCreated}
-                    onDeleted={handleDeleted}
-                    onUpdated={handleUpdated}
-                  />
-                ))}
+                .map(renderComment)}
             </div>
           )}
           {commentFormOpen ? (

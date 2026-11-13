@@ -104,7 +104,7 @@ export function UserProfile({ userId }: { userId: string }) {
           <h1 className="truncate text-xl font-semibold text-slate-900">
             {profile.name}
           </h1>
-          <p className="mt-1 whitespace-pre-wrap break-words text-sm text-slate-600">
+          <p className="mt-1 whitespace-pre-wrap wrap-break-word text-sm text-slate-600">
             {profile.bio || "No bio yet."}
           </p>
         </div>

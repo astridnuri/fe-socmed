@@ -63,7 +63,7 @@ export function PostCard({ post, onDeleted, onUpdated }: PostCardProps) {
         {post.location && (
           <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
             <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="break-words">{post.location}</span>
+            <span className="wrap-break-word">{post.location}</span>
           </p>
         )}
 

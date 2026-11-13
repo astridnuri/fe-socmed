@@ -1,7 +1,7 @@
 "use client";
 
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { CommentDeleteButton } from "@/components/comments/comment-delete-button";
 import { CommentEditForm } from "@/components/comments/comment-edit-form";
 import { CommentForm } from "@/components/comments/comment-form";
@@ -16,7 +16,7 @@ import type { PostComment } from "@/types";
 interface CommentItemProps {
   comment: PostComment;
   replies?: PostComment[];
-  isReply?: boolean;
+  children?: ReactNode;
   postId: number;
   onCreated: (comment: PostComment, commentsCount: number) => void;
   onDeleted: (commentId: number, commentsCount?: number) => void;
@@ -26,7 +26,7 @@ interface CommentItemProps {
 export function CommentItem({
   comment,
   replies = [],
-  isReply = false,
+  children,
   postId,
   onCreated,
   onDeleted,
@@ -118,7 +118,7 @@ export function CommentItem({
               initialLiked={comment.liked_by_me}
               initialCount={comment.likes_count}
             />
-            {!isReply && !editing && (
+            {!editing && (
               <Button
                 type="button"
                 variant="ghost"
@@ -134,19 +134,9 @@ export function CommentItem({
         </div>
       </div>
 
-      {!isReply && (replies.length > 0 || replying) && (
+      {(replies.length > 0 || replying) && (
         <div className="ml-4 space-y-3 border-l border-slate-200 pl-4">
-          {replies.map((reply) => (
-            <CommentItem
-              key={reply.id}
-              comment={reply}
-              isReply
-              postId={postId}
-              onCreated={onCreated}
-              onDeleted={onDeleted}
-              onUpdated={onUpdated}
-            />
-          ))}
+          {children}
           {replying && (
             <CommentForm
               postId={postId}
