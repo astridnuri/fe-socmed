@@ -354,8 +354,8 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
                     {/* <MapPin
                       className="size-4 shrink-0 text-slate-500"
                       aria-hidden="true"
-                    /> */}
-                    <p className="pl-2 text-xs text-slate-500">
+                    /> ini matikan saja */} 
+                    {/* <p className="pl-2 text-xs text-slate-500">
                       Location is shared with OpenStreetMap only when requested.{" "}<br></br>
                       <a
                         href="https://www.openstreetmap.org/copyright"
@@ -365,9 +365,9 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
                       >
                         © OpenStreetMap contributors
                       </a>
-                    </p>
+                    </p> */}
                   </div>
-                    <Button
+                    {/* <Button
                       type="button"
                       variant="outline"
                       className="grow shadow-xl border-slate-400 text-xs text-slate-900 hover:bg-slate-200 hover:text-black transition"
@@ -377,7 +377,7 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
                       className="size-4 shrink-0 text-slate-500"
                       aria-hidden="true"/>   
                       {findingLocation ? "Finding..." : `Use my location`}
-                    </Button>
+                    </Button> */}
 
               {locationOptions.length > 1 && (
                 <div className="space-y-1 pl-6">

@@ -19,16 +19,16 @@ export const createPost = (formData: FormData) =>
     body: formData,
   });
 
-  export const updatePost = (postId: number, content: string) =>
+export const updatePost = (postId: number, formData: FormData) =>
   api<{ message: string; post: Post }>(`/posts/${postId}`, {
     method: "PUT",
-    body: { content },
+    body: formData,
   });
 
-  export const toggleLike = (postId: number) =>
+export const toggleLike = (postId: number) =>
   api<{ liked: boolean; likes_count: number }>(`/posts/${postId}/like`, {
     method: "POST",
   });
 
-  export const deletePost = (postId: number) =>
+export const deletePost = (postId: number) =>
   api<{ message: string }>(`/posts/${postId}`, { method: "DELETE" });

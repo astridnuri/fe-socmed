@@ -66,10 +66,10 @@ export function PostMenu({ post, onDeleted, onUpdated }: PostMenuProps) {
           <MoreHorizontal className="size-5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
+          {/* <DropdownMenuItem onClick={() => setEditOpen(true)}>
             <Pencil className="size-4" />
             Edit post
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             className="text-red-600 focus:text-red-600"
             onClick={() => setConfirmOpen(true)}

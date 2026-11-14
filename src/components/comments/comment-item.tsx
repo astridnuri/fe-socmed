@@ -101,7 +101,7 @@ export function CommentItem({
             )
           )}
 
-          {comment.image && (
+          {(comment.image && !editing) && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={fileUrl(comment.image)}
@@ -110,8 +110,7 @@ export function CommentItem({
               className="mt-2 max-h-64 w-auto max-w-full rounded-lg border border-slate-200"
             />
           )}
-
-          <div className="mt-1 flex items-center gap-3">
+          {/* <div className="mt-1 flex items-center gap-3">
             <CommentLikeButton
               postId={postId}
               commentId={comment.id}
@@ -130,7 +129,7 @@ export function CommentItem({
                 Reply
               </Button>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { ImagePlus, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { ApiError, fileUrl } from "@/lib/api";
+import { validateImageFile } from "@/lib/file";
 import { postSchema } from "@/lib/schemas";
 import { primaryTone, textareaClass } from "@/lib/ui";
 import { cn } from "@/lib/utils";
@@ -28,10 +30,44 @@ interface PostEditDialogProps {
 
 export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps) {
   const [content, setContent] = useState(post.content ?? "");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [imageRemoved, setImageRemoved] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
 
-  const cannotBeEmpty = !content.trim() && !post.image;
+  const hasImage = Boolean(file || (post.image && !imageRemoved));
+  const cannotBeEmpty = !content.trim() && !hasImage;
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    };
+  }, []);
+
+  const updateFile = (nextFile: File | null) => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    previewUrlRef.current = nextFile ? URL.createObjectURL(nextFile) : null;
+    setPreview(previewUrlRef.current);
+    setFile(nextFile);
+  };
+
+  const onPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0];
+    e.target.value = "";
+    if (!picked) return;
+
+    const message = validateImageFile(picked);
+    if (message) {
+      setError(message);
+      return;
+    }
+
+    setError("");
+    updateFile(picked);
+  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,11 +78,12 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
       setError(parsed.error.issues[0].message);
       return;
     }
-    if (!parsed.data.content && !post.image) {
+    if (!parsed.data.content && !hasImage) {
       setError("Post without image cannot be empty");
       return;
     }
-    if (parsed.data.content === (post.content ?? "")) {
+    const imageChanged = Boolean(file || (post.image && imageRemoved));
+    if (parsed.data.content === (post.content ?? "") && !imageChanged) {
       onClose(); // tidak ada perubahan
       return;
     }
@@ -54,14 +91,19 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
     setError("");
     setSubmitting(true);
     try {
-      const res = await postService.updatePost(post.id, parsed.data.content);
+      const formData = new FormData();
+      formData.append("content", parsed.data.content);
+      if (file) formData.append("image", file);
+      if (imageRemoved) formData.append("removeImage", "true");
+
+      const res = await postService.updatePost(post.id, formData);
       onUpdated(res.post);
       toast.success("Post updated");
       onClose();
     } catch (err) {
       setError(
         err instanceof ApiError
-          ? (err.errors?.content ?? err.message)
+          ? (err.errors?.content ?? err.errors?.image ?? err.message)
           : "Error occured, please try again"
       );
       setSubmitting(false);
@@ -92,17 +134,26 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
             autoFocus
           />
 
-          {post.image && (
-            <div className="space-y-1.5">
+          {(preview || (post.image && !imageRemoved)) && (
+            <div className="relative w-fit">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={fileUrl(post.image)}
+                src={preview ?? fileUrl(post.image)}
                 alt="Post attachment"
-                className="max-h-40 w-auto max-w-full rounded-lg border border-slate-200"
+                className="max-h-72 w-auto max-w-full rounded-lg border border-slate-200"
               />
-              <p className="text-xs text-slate-500">
-                Only text can be edited. Image remains.
-              </p>
+              <button
+                type="button"
+                disabled={submitting}
+                onClick={() => {
+                  updateFile(null);
+                  if (post.image) setImageRemoved(true);
+                }}
+                aria-label="Remove image"
+                className="absolute right-2 top-2 rounded-full bg-slate-900/70 p-1 text-white transition-colors hover:bg-slate-900"
+              >
+                <X className="size-4" />
+              </button>
             </div>
           )}
 
@@ -117,6 +168,35 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
             >
               {content.length}/{MAX_LENGTH}
             </span>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg, image/jpg, image/png,image/webp"
+              className="hidden"
+              onChange={onPick}
+            />
+            {/* <Button
+              type="button"
+              variant="ghost"
+              className="text-slate-600"
+              onClick={() => fileRef.current?.click()}
+              disabled={submitting}
+            >
+              <ImagePlus className="size-4" />
+              {hasImage ? "Change image" : "Image"}
+            </Button> */}
+            {!hasImage && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="text-slate-600"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={submitting}
+                >
+                  <ImagePlus className="size-4" />
+                  Image
+                </Button>
+            )}
             <Button type="button" variant="ghost" onClick={onClose} disabled={submitting}>
               Cancel
             </Button>

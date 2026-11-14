@@ -10,10 +10,14 @@ export const createComment = (postId: number, formData: FormData) =>
     { method: "POST", body: formData }
   );
 
-export const updateComment = (postId: number, commentId: number, comment: string) =>
+export const updateComment = (
+  postId: number,
+  commentId: number,
+  formData: FormData
+) =>
   api<{ message: string; comment: PostComment }>(
     `/posts/${postId}/comments/${commentId}`,
-    { method: "PUT", body: { comment } }
+    { method: "PUT", body: formData }
   );
 
 export const deleteComment = (postId: number, commentId: number) =>
