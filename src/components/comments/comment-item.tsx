@@ -36,7 +36,7 @@ export function CommentItem({
   const [editing, setEditing] = useState(false);
   const [replying, setReplying] = useState(false);
 
-  // Hanya penulis yang melihat tombol edit dan hapus.
+  // Hanya pemilik yang melihat tombol edit dan hapus.
   // Yang menegakkan aturan tetap backend (403).
   const isOwner = user?.id === comment.user.id;
 
@@ -68,20 +68,20 @@ export function CommentItem({
 
             {isOwner && !editing && (
               <div className="flex items-center gap-0.5">
-                <button
+                {/* <button
                   type="button"
                   onClick={() => setEditing(true)}
                   aria-label="Edit comment"
                   className="flex size-7 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
                 >
                   <Pencil className="size-4" />
-                </button>
-                <CommentDeleteButton
+                </button> */}
+                {/* <CommentDeleteButton
                   postId={postId}
                   commentId={comment.id}
                   hasReplies={replies.length > 0}
                   onDeleted={onDeleted}
-                />
+                /> */}
               </div>
             )}
           </div>

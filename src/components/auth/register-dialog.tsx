@@ -115,7 +115,7 @@ export function RegisterDialog() {
                 <Input
                   id={`reg-${f.key}`}
                   type={f.type}
-                  autoComplete={f.autoComplete}
+                  // autoComplete={f.autoComplete}
                   value={values[f.key]}
                   onChange={set(f.key)}
                   aria-invalid={!!errors[f.key]}

@@ -29,7 +29,7 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
       .then((res) => {
         if (cancelled) return;
         setComments(res.comments);
-        onCountChange(res.comments.length); // samakan angka di ikon dengan data terbaru
+        onCountChange(res.comments.length); // samakan angka di ikon dengan data trbaru
       })
       .catch((err) => {
         if (cancelled) return;
@@ -75,7 +75,7 @@ export function CommentSection({ postId, onCountChange }: CommentSectionProps) {
 
     const next = comments.filter((comment) => !deletedIds.has(comment.id));
     setComments(next);
-    onCountChange(count ?? next.length); // pakai angka dari server bila ada
+    onCountChange(count ?? next.length); // pakai angka dari server klo ada
   };
 
   const handleUpdated = (updated: PostComment) =>

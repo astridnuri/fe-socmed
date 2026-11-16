@@ -23,7 +23,7 @@ export function PostCard({ post, onDeleted, onUpdated }: PostCardProps) {
   const [showComments, setShowComments] = useState(false);
   const [commentsCount, setCommentsCount] = useState(post.comments_count);
 
-  // Hanya pemilik yang melihat menu edit dan hapus.
+  // Hanya pemilik post yang melihat menu edit dan hapus.
   // Yang menegakkan aturan tetap backend (403).
   const isOwner = user?.id === post.user.id;
 
@@ -39,7 +39,7 @@ export function PostCard({ post, onDeleted, onUpdated }: PostCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 items-baseline gap-2">
-            {/* <Link
+            {/* <Link 
               href={`/users/${post.user.id}`}
               className="truncate text-sm font-semibold text-slate-900 hover:underline"
             >

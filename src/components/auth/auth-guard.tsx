@@ -23,7 +23,7 @@ export function AuthGuard({ children, requireAuth = true }: AuthGuardProps) {
     }
   }, [loading, user, requireAuth, router]);
 
-  // Tampilkan loading spinner yang rapi saat mengecek token di localStorage
+  // loading spinner muncul saat cek token di localStorage
   if (loading || (requireAuth && !user) || (!requireAuth && user)) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-slate-200">

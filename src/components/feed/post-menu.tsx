@@ -57,7 +57,7 @@ export function PostMenu({ post, onDeleted, onUpdated }: PostMenuProps) {
 
   return (
     <>
-      {/* modal={false} mencegah halaman "membeku" saat dialog dibuka dari menu */}
+      {/* modal={false} mencegah freeze saat dialog dibuka dari menu */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           aria-label="Post option"
@@ -80,7 +80,7 @@ export function PostMenu({ post, onDeleted, onUpdated }: PostMenuProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Dialog dipasang hanya saat dibuka agar isinya selalu segar */}
+      {/* Dialog dipasang hanya saat dibuka supaya isinya selalu baru */}
       {editOpen && (
         <PostEditDialog
           post={post}

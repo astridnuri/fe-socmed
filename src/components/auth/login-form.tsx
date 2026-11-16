@@ -50,7 +50,7 @@ export function LoginForm({ reason }: { reason?: string }) {
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.errors) setErrors(err.errors);
-        else setFormError(err.message); // misal "Email atau password salah"
+        else setFormError(err.message); // error message
       } else {
         setFormError("Error occured, please try again");
       }
@@ -67,7 +67,7 @@ export function LoginForm({ reason }: { reason?: string }) {
         <Input
           id="email"
           type="email"
-          autoComplete="email"
+          // autoComplete="email"
           className={inputClass}
           value={values.email}
           onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
@@ -83,7 +83,7 @@ export function LoginForm({ reason }: { reason?: string }) {
         <Input
           id="password"
           type="password"
-          autoComplete="current-password"
+          // autoComplete="current-password"
           className={inputClass}
           value={values.password}
           onChange={(e) => setValues((v) => ({ ...v, password: e.target.value }))}

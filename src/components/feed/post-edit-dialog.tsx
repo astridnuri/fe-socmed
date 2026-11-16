@@ -84,7 +84,7 @@ export function PostEditDialog({ post, onClose, onUpdated }: PostEditDialogProps
     }
     const imageChanged = Boolean(file || (post.image && imageRemoved));
     if (parsed.data.content === (post.content ?? "") && !imageChanged) {
-      onClose(); // tidak ada perubahan
+      onClose(); // tdk ada perubahan
       return;
     }
 

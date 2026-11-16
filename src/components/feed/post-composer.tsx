@@ -124,7 +124,7 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
 
   if (!user) return null;
 
-  // Satu pintu untuk mengganti/menghapus gambar, sekaligus melepas URL pratinjau lama
+  // Satu pintu untuk ganti/hapus gambar, sekaligus melepas URL preview sblmnya
   const setPicked = (next: File | null) => {
     if (preview) URL.revokeObjectURL(preview);
     setFile(next);
@@ -214,7 +214,7 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
           const address = result.data.address;
           const options = address ? buildLocationOptions(address) : [];
           if (options.length === 0) {
-            throw new Error("Could not find a city or region for this location.");
+            throw new Error("Cannot find a city or region for this location.");
           }
 
           locationCache.current.set(cacheKey, options);
@@ -269,7 +269,7 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
       onCreated(res.post);
       toast.success("Post shared");
 
-      // Berhasil: kosongkan draf dan tutup
+      // Berhasil: empty draft, tutup
       setContent("");
       setLocation("");
       setLocationOptions([]);
@@ -312,7 +312,7 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
 
   return (
     <>
-      {/* Bar pemicu di atas feed */}
+      {/* trigger di atas feed */}
       <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 sm:px-5">
         {avatar}
         <button
@@ -327,13 +327,13 @@ export function PostComposer({ onCreated }: { onCreated: (post: Post) => void })
         </Button>
       </div>
 
-      {/* Menutup overlay mempertahankan draf; tombol Cancel membuangnya. */}
+      {/* tampilkan dialog post; bisa cancel  */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>New post</DialogTitle>
             <DialogDescription className="sr-only">
-              Write text or share image to your fellows
+              Write text or share image
             </DialogDescription>
           </DialogHeader>
 
